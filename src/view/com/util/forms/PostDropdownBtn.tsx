@@ -1,5 +1,6 @@
 import React, {memo} from 'react'
 import {Pressable, PressableProps, StyleProp, ViewStyle} from 'react-native'
+import {present as presentTranslation} from 'react-native-ios-translation'
 import * as Clipboard from 'expo-clipboard'
 import {
   AppBskyActorDefs,
@@ -173,8 +174,10 @@ let PostDropdownBtn = ({
   }, [_, richText])
 
   const onOpenTranslate = React.useCallback(() => {
-    openLink(translatorUrl)
-  }, [openLink, translatorUrl])
+    presentTranslation({text: record.text})
+    // openLink(translatorUrl)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openLink, translatorUrl, record.text])
 
   const onHidePost = React.useCallback(() => {
     hidePost({uri: postUri})

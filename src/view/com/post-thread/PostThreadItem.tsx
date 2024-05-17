@@ -1,5 +1,6 @@
 import React, {memo, useMemo} from 'react'
 import {StyleSheet, View} from 'react-native'
+import {present as presentTranslation} from 'react-native-ios-translation'
 import {
   AppBskyFeedDefs,
   AppBskyFeedPost,
@@ -320,6 +321,7 @@ let PostThreadItemLoaded = ({
               post={post}
               translatorUrl={translatorUrl}
               needsTranslation={needsTranslation}
+              record={record}
             />
             {post.repostCount !== 0 || post.likeCount !== 0 ? (
               // Show this section unless we're *sure* it has no engagement.
@@ -622,18 +624,21 @@ function ExpandedPostDetails({
   post,
   needsTranslation,
   translatorUrl,
+  record,
 }: {
   post: AppBskyFeedDefs.PostView
   needsTranslation: boolean
   translatorUrl: string
+  record: AppBskyFeedPost.Record
 }) {
   const pal = usePalette('default')
   const {_} = useLingui()
   const openLink = useOpenLink()
-  const onTranslatePress = React.useCallback(
-    () => openLink(translatorUrl),
-    [openLink, translatorUrl],
-  )
+  const onTranslatePress = React.useCallback(() => {
+    presentTranslation({text: record.text})
+    // openLink(translatorUrl)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openLink, translatorUrl, record.text])
   return (
     <View style={[s.flexRow, s.mt2, s.mb10]}>
       <Text style={pal.textLight}>{niceDate(post.indexedAt)}</Text>
