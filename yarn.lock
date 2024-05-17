@@ -18501,6 +18501,11 @@ react-native-ios-context-menu@^1.15.3:
   dependencies:
     "@dominicstop/ts-event-emitter" "^1.1.0"
 
+react-native-ios-translation@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-ios-translation/-/react-native-ios-translation-0.2.1.tgz#852d23951f6a9005dc9dd8bc45a8e9669282b658"
+  integrity sha512-2Z9yDjbccOmbupmerRaeFfkWDChTgTeI+77N3dcQQ7scwsq2D9qVcGgicU+NZbOHjXLoijVFzqkmRB1H8hIfOg==
+
 react-native-keyboard-controller@^1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/react-native-keyboard-controller/-/react-native-keyboard-controller-1.12.1.tgz#6de22ed4d060528a0dd25621eeaa7f71772ce35f"
