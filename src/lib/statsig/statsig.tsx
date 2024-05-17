@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
 import {Platform} from 'react-native'
 import {AppState, AppStateStatus} from 'react-native'
@@ -74,7 +75,7 @@ let getCurrentRouteName: () => string | null | undefined = () => null
 export function attachRouteToLogEvents(
   getRouteName: () => string | null | undefined,
 ) {
-  getCurrentRouteName = getRouteName
+  // getCurrentRouteName = getRouteName
 }
 
 export function toClout(n: number | null | undefined): number | undefined {
@@ -89,18 +90,18 @@ export function logEvent<E extends keyof LogEvents>(
   eventName: E & string,
   rawMetadata: LogEvents[E] & FlatJSONRecord,
 ) {
-  try {
-    const fullMetadata = {
-      ...rawMetadata,
-    } as Record<string, string> // Statsig typings are unnecessarily strict here.
-    fullMetadata.routeName = getCurrentRouteName() ?? '(Uninitialized)'
-    if (Statsig.initializeCalled()) {
-      Statsig.logEvent(eventName, null, fullMetadata)
-    }
-  } catch (e) {
-    // A log should never interrupt the calling code, whatever happens.
-    logger.error('Failed to log an event', {message: e})
-  }
+  // try {
+  //   const fullMetadata = {
+  //     ...rawMetadata,
+  //   } as Record<string, string> // Statsig typings are unnecessarily strict here.
+  //   fullMetadata.routeName = getCurrentRouteName() ?? '(Uninitialized)'
+  //   if (Statsig.initializeCalled()) {
+  //     Statsig.logEvent(eventName, null, fullMetadata)
+  //   }
+  // } catch (e) {
+  //   // A log should never interrupt the calling code, whatever happens.
+  //   logger.error('Failed to log an event', {message: e})
+  // }
 }
 
 // We roll our own cache in front of Statsig because it is a singleton
@@ -109,25 +110,26 @@ export function logEvent<E extends keyof LogEvents>(
 const GateCache = React.createContext<Map<string, boolean> | null>(null)
 
 export function useGate(): (gateName: Gate) => boolean {
-  const cache = React.useContext(GateCache)
-  if (!cache) {
-    throw Error('useGate() cannot be called outside StatsigProvider.')
-  }
-  const gate = React.useCallback(
-    (gateName: Gate): boolean => {
-      const cachedValue = cache.get(gateName)
-      if (cachedValue !== undefined) {
-        return cachedValue
-      }
-      const value = Statsig.initializeCalled()
-        ? Statsig.checkGate(gateName)
-        : false
-      cache.set(gateName, value)
-      return value
-    },
-    [cache],
-  )
-  return gate
+  return () => true
+  // const cache = React.useContext(GateCache)
+  // if (!cache) {
+  //   throw Error('useGate() cannot be called outside StatsigProvider.')
+  // }
+  // const gate = React.useCallback(
+  //   (gateName: Gate): boolean => {
+  //     const cachedValue = cache.get(gateName)
+  //     if (cachedValue !== undefined) {
+  //       return cachedValue
+  //     }
+  //     const value = Statsig.initializeCalled()
+  //       ? Statsig.checkGate(gateName)
+  //       : false
+  //     cache.set(gateName, value)
+  //     return value
+  //   },
+  //   [cache],
+  // )
+  // return gate
 }
 
 /**
@@ -198,20 +200,20 @@ export async function tryFetchGates(
   strategy: 'prefer-low-latency' | 'prefer-fresh-gates',
 ) {
   try {
-    let timeoutMs = 250 // Don't block the UI if we can't do this fast.
-    if (strategy === 'prefer-fresh-gates') {
-      // Use this for less common operations where the user would be OK with a delay.
-      timeoutMs = 1500
-    }
-    // Note: This condition is currently false the very first render because
-    // Statsig has not initialized yet. In the future, we can fix this by
-    // doing the initialization ourselves instead of relying on the provider.
-    if (Statsig.initializeCalled()) {
-      await Promise.race([
-        timeout(timeoutMs),
-        Statsig.prefetchUsers([toStatsigUser(did)]),
-      ])
-    }
+    // let timeoutMs = 250 // Don't block the UI if we can't do this fast.
+    // if (strategy === 'prefer-fresh-gates') {
+    //   // Use this for less common operations where the user would be OK with a delay.
+    //   timeoutMs = 1500
+    // }
+    // // Note: This condition is currently false the very first render because
+    // // Statsig has not initialized yet. In the future, we can fix this by
+    // // doing the initialization ourselves instead of relying on the provider.
+    // if (Statsig.initializeCalled()) {
+    //   await Promise.race([
+    //     timeout(timeoutMs),
+    //     Statsig.prefetchUsers([toStatsigUser(did)]),
+    //   ])
+    // }
   } catch (e) {
     // Don't leak errors to the calling code, this is meant to be always safe.
     console.error(e)
@@ -249,29 +251,31 @@ export function Provider({children}: {children: React.ReactNode}) {
   // These changes are prefetched and stored, but don't get applied until the active DID changes.
   // This ensures that when you switch an account, it already has fresh results by then.
   const handleIntervalTick = useNonReactiveCallback(() => {
-    if (Statsig.initializeCalled()) {
-      // Note: Only first five will be taken into account by Statsig.
-      Statsig.prefetchUsers([currentStatsigUser, ...otherStatsigUsers])
-    }
+    // if (Statsig.initializeCalled()) {
+    //   // Note: Only first five will be taken into account by Statsig.
+    //   Statsig.prefetchUsers([currentStatsigUser, ...otherStatsigUsers])
+    // }
   })
   React.useEffect(() => {
     const id = setInterval(handleIntervalTick, 60e3 /* 1 min */)
     return () => clearInterval(id)
   }, [handleIntervalTick])
 
-  return (
-    <GateCache.Provider value={gateCache}>
-      <StatsigProvider
-        key={did}
-        sdkKey="client-SXJakO39w9vIhl3D44u8UupyzFl4oZ2qPIkjwcvuPsV"
-        mountKey={currentStatsigUser.userID}
-        user={currentStatsigUser}
-        // This isn't really blocking due to short initTimeoutMs above.
-        // However, it ensures `isLoading` is always `false`.
-        waitForInitialization={true}
-        options={statsigOptions}>
-        {children}
-      </StatsigProvider>
-    </GateCache.Provider>
-  )
+  return children
+
+  // return (
+  //   <GateCache.Provider value={gateCache}>
+  //     <StatsigProvider
+  //       key={did}
+  //       sdkKey="client-SXJakO39w9vIhl3D44u8UupyzFl4oZ2qPIkjwcvuPsV"
+  //       mountKey={currentStatsigUser.userID}
+  //       user={currentStatsigUser}
+  //       // This isn't really blocking due to short initTimeoutMs above.
+  //       // However, it ensures `isLoading` is always `false`.
+  //       waitForInitialization={true}
+  //       options={statsigOptions}>
+  //       {children}
+  //     </StatsigProvider>
+  //   </GateCache.Provider>
+  // )
 }

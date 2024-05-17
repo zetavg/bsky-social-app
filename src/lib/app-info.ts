@@ -14,6 +14,7 @@ export const BUNDLE_DATE =
   IS_TESTFLIGHT || IS_DEV ? 0 : Number(process.env.EXPO_PUBLIC_BUNDLE_DATE)
 
 export const appVersion = `${nativeApplicationVersion}.${nativeBuildVersion}`
-export const bundleInfo = `${BUNDLE_IDENTIFIER} (${
-  IS_DEV ? 'dev' : IS_TESTFLIGHT ? 'tf' : 'prod'
-})`
+// export const bundleInfo = `${BUNDLE_IDENTIFIER} (${
+//   IS_DEV ? 'dev' : IS_TESTFLIGHT ? 'tf' : 'prod'
+// })`
+export const bundleInfo = '(modified by zeta.vg)'

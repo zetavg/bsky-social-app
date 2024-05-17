@@ -54,9 +54,9 @@ module.exports = function (config) {
     expo: {
       version: VERSION,
       name: 'Bluesky',
-      slug: 'bluesky',
-      scheme: 'bluesky',
-      owner: 'blueskysocial',
+      slug: 'bluesky-zetavg',
+      scheme: 'bluesky-zetavg',
+      owner: 'zetavg',
       runtimeVersion: {
         policy: 'appVersion',
       },
@@ -68,7 +68,7 @@ module.exports = function (config) {
       primaryColor: '#1083fe',
       ios: {
         supportsTablet: false,
-        bundleIdentifier: 'xyz.blueskyweb.app',
+        bundleIdentifier: 'app.ztg.xyz.blueskyweb.app',
         config: {
           usesNonExemptEncryption: false,
         },
@@ -83,13 +83,16 @@ module.exports = function (config) {
           NSPhotoLibraryUsageDescription:
             'Used for profile pictures, posts, and other kinds of content',
         },
-        associatedDomains: ['applinks:bsky.app', 'applinks:staging.bsky.app'],
+        associatedDomains: [
+          'applinks:bsky.ztg.app',
+          'applinks:staging.bsky.ztg.app',
+        ],
         splash: {
           ...SPLASH_CONFIG,
           dark: DARK_SPLASH_CONFIG,
         },
         entitlements: {
-          'com.apple.security.application-groups': 'group.app.bsky',
+          'com.apple.security.application-groups': 'group.app.ztg.bsky',
         },
         privacyManifests: {
           NSPrivacyAccessedAPITypes: [
@@ -126,14 +129,14 @@ module.exports = function (config) {
       },
       android: {
         icon: './assets/icon.png',
-        adaptiveIcon: {
-          foregroundImage: './assets/icon-android-foreground.png',
-          monochromeImage: './assets/icon-android-foreground.png',
-          backgroundImage: './assets/icon-android-background.png',
-          backgroundColor: '#1185FE',
-        },
-        googleServicesFile: './google-services.json',
-        package: 'xyz.blueskyweb.app',
+        // adaptiveIcon: {
+        //   foregroundImage: './assets/icon-android-foreground.png',
+        //   monochromeImage: './assets/icon-android-foreground.png',
+        //   backgroundImage: './assets/icon-android-background.png',
+        //   backgroundColor: '#1185FE',
+        // },
+        // googleServicesFile: './google-services.json',
+        package: 'app.ztg.xyz.blueskyweb.app',
         intentFilters: [
           {
             action: 'VIEW',
@@ -159,22 +162,22 @@ module.exports = function (config) {
       web: {
         favicon: './assets/favicon.png',
       },
-      updates: {
-        url: 'https://updates.bsky.app/manifest',
-        enabled: UPDATES_ENABLED,
-        fallbackToCacheTimeout: 30000,
-        codeSigningCertificate: UPDATES_ENABLED
-          ? './code-signing/certificate.pem'
-          : undefined,
-        codeSigningMetadata: UPDATES_ENABLED
-          ? {
-              keyid: 'main',
-              alg: 'rsa-v1_5-sha256',
-            }
-          : undefined,
-        checkAutomatically: 'NEVER',
-        channel: UPDATES_CHANNEL,
-      },
+      // updates: {
+      //   url: 'https://updates.bsky.app/manifest',
+      //   enabled: UPDATES_ENABLED,
+      //   fallbackToCacheTimeout: 30000,
+      //   codeSigningCertificate: UPDATES_ENABLED
+      //     ? './code-signing/certificate.pem'
+      //     : undefined,
+      //   codeSigningMetadata: UPDATES_ENABLED
+      //     ? {
+      //         keyid: 'main',
+      //         alg: 'rsa-v1_5-sha256',
+      //       }
+      //     : undefined,
+      //   checkAutomatically: 'NEVER',
+      //   channel: UPDATES_CHANNEL,
+      // },
       assetBundlePatterns: ['**/*'],
       plugins: [
         'expo-localization',
@@ -212,51 +215,51 @@ module.exports = function (config) {
         './plugins/notificationsExtension/withNotificationsExtension.js',
       ].filter(Boolean),
       extra: {
-        eas: {
-          build: {
-            experimental: {
-              ios: {
-                appExtensions: [
-                  {
-                    targetName: 'Share-with-Bluesky',
-                    bundleIdentifier: 'xyz.blueskyweb.app.Share-with-Bluesky',
-                    entitlements: {
-                      'com.apple.security.application-groups': [
-                        'group.app.bsky',
-                      ],
-                    },
-                  },
-                  {
-                    targetName: 'BlueskyNSE',
-                    bundleIdentifier: 'xyz.blueskyweb.app.BlueskyNSE',
-                    entitlements: {
-                      'com.apple.security.application-groups': [
-                        'group.app.bsky',
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          projectId: '55bd077a-d905-4184-9c7f-94789ba0f302',
-        },
+        // eas: {
+        //   build: {
+        //     experimental: {
+        //       ios: {
+        //         appExtensions: [
+        //           {
+        //             targetName: 'Share-with-Bluesky',
+        //             bundleIdentifier: 'xyz.blueskyweb.app.Share-with-Bluesky',
+        //             entitlements: {
+        //               'com.apple.security.application-groups': [
+        //                 'group.app.bsky',
+        //               ],
+        //             },
+        //           },
+        //           {
+        //             targetName: 'BlueskyNSE',
+        //             bundleIdentifier: 'xyz.blueskyweb.app.BlueskyNSE',
+        //             entitlements: {
+        //               'com.apple.security.application-groups': [
+        //                 'group.app.bsky',
+        //               ],
+        //             },
+        //           },
+        //         ],
+        //       },
+        //     },
+        //   },
+        //   projectId: '55bd077a-d905-4184-9c7f-94789ba0f302',
+        // },
       },
       hooks: {
-        postPublish: [
-          /*
-           * @see https://docs.expo.dev/guides/using-sentry/#app-configuration
-           */
-          {
-            file: 'sentry-expo/upload-sourcemaps',
-            config: {
-              organization: 'blueskyweb',
-              project: 'react-native',
-              release: VERSION,
-              dist: SENTRY_DIST,
-            },
-          },
-        ],
+        // postPublish: [
+        //   /*
+        //    * @see https://docs.expo.dev/guides/using-sentry/#app-configuration
+        //    */
+        //   {
+        //     file: 'sentry-expo/upload-sourcemaps',
+        //     config: {
+        //       organization: 'blueskyweb',
+        //       project: 'react-native',
+        //       release: VERSION,
+        //       dist: SENTRY_DIST,
+        //     },
+        //   },
+        // ],
       },
     },
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {ComponentProps} from 'react'
 import {
   Linking,
@@ -17,6 +18,7 @@ import {msg, Plural, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {StackActions, useNavigation} from '@react-navigation/native'
 
+import {appVersion, bundleInfo} from '#/lib/app-info'
 import {emitSoftReset} from '#/state/events'
 import {useKawaiiMode} from '#/state/preferences/kawaii'
 import {useUnreadNotifications} from '#/state/queries/notifications/unread'
@@ -271,7 +273,7 @@ let DrawerContent = ({}: {}): React.ReactNode => {
           <View style={styles.smallSpacer} />
 
           <View style={[{flexWrap: 'wrap', gap: 12}, s.flexCol]}>
-            <TextLink
+            {/* <TextLink
               type="md"
               style={pal.link}
               href="https://bsky.social/about/support/tos"
@@ -282,7 +284,7 @@ let DrawerContent = ({}: {}): React.ReactNode => {
               style={pal.link}
               href="https://bsky.social/about/support/privacy-policy"
               text={_(msg`Privacy Policy`)}
-            />
+            /> */}
             {kawaii && (
               <Text type="md" style={pal.textLight}>
                 Logo by{' '}
@@ -321,41 +323,61 @@ let DrawerFooter = ({
   const theme = useTheme()
   const pal = usePalette('default')
   const {_} = useLingui()
+
+  const setDrawerOpen = useSetDrawerOpen()
+  const navigation = useNavigation<NavigationProp>()
+
   return (
-    <View style={styles.footer}>
+    <View style={[styles.footer, {paddingTop: 10}]}>
       <TouchableOpacity
         accessibilityRole="link"
-        accessibilityLabel={_(msg`Send feedback`)}
-        accessibilityHint=""
-        onPress={onPressFeedback}
-        style={[
-          styles.footerBtn,
-          styles.footerBtnFeedback,
-          theme.colorScheme === 'light'
-            ? styles.footerBtnFeedbackLight
-            : styles.footerBtnFeedbackDark,
-        ]}>
-        <FontAwesomeIcon
-          style={pal.link as FontAwesomeIconStyle}
-          size={18}
-          icon={['far', 'message']}
-        />
-        <Text type="lg-medium" style={[pal.link, s.pl10]}>
-          <Trans>Feedback</Trans>
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        accessibilityRole="link"
-        accessibilityLabel={_(msg`Send feedback`)}
-        accessibilityHint=""
-        onPress={onPressHelp}
-        style={[styles.footerBtn]}>
-        <Text type="lg-medium" style={[pal.link, s.pl10]}>
-          <Trans>Help</Trans>
+        onPress={() => {
+          setDrawerOpen(false)
+          navigation.navigate('Profile', {name: 'zeta.vg'})
+        }}>
+        <Text style={[pal.text, {fontSize: 12, opacity: 0.25}]}>
+          <Trans>
+            Version {appVersion} {bundleInfo}
+          </Trans>
         </Text>
       </TouchableOpacity>
     </View>
   )
+  // return (
+  //   <View style={styles.footer}>
+  //     <TouchableOpacity
+  //       accessibilityRole="link"
+  //       accessibilityLabel={_(msg`Send feedback`)}
+  //       accessibilityHint=""
+  //       onPress={onPressFeedback}
+  //       style={[
+  //         styles.footerBtn,
+  //         styles.footerBtnFeedback,
+  //         theme.colorScheme === 'light'
+  //           ? styles.footerBtnFeedbackLight
+  //           : styles.footerBtnFeedbackDark,
+  //       ]}>
+  //       <FontAwesomeIcon
+  //         style={pal.link as FontAwesomeIconStyle}
+  //         size={18}
+  //         icon={['far', 'message']}
+  //       />
+  //       <Text type="lg-medium" style={[pal.link, s.pl10]}>
+  //         <Trans>Feedback</Trans>
+  //       </Text>
+  //     </TouchableOpacity>
+  //     <TouchableOpacity
+  //       accessibilityRole="link"
+  //       accessibilityLabel={_(msg`Send feedback`)}
+  //       accessibilityHint=""
+  //       onPress={onPressHelp}
+  //       style={[styles.footerBtn]}>
+  //       <Text type="lg-medium" style={[pal.link, s.pl10]}>
+  //         <Trans>Help</Trans>
+  //       </Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // )
 }
 DrawerFooter = React.memo(DrawerFooter)
 
