@@ -1,10 +1,10 @@
 import format from 'date-fns/format'
 import {nanoid} from 'nanoid/non-secure'
 
-import {Sentry} from '#/logger/sentry'
-import * as env from '#/env'
 import {DebugContext} from '#/logger/debugContext'
 import {add} from '#/logger/logDump'
+import {Sentry} from '#/logger/sentry'
+import * as env from '#/env'
 
 export enum LogLevel {
   Debug = 'debug',
@@ -330,5 +330,7 @@ if (env.IS_DEV && !env.IS_TEST) {
    */
   // logger.addTransport(sentryTransport)
 } else if (env.IS_PROD) {
-  logger.addTransport(sentryTransport)
+  // logger.addTransport(sentryTransport)
 }
+
+logger.addTransport(sentryTransport)

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Importing these separately from `platform/detection` and `lib/app-info` to
  * avoid future conflicts and/or circular deps
@@ -30,12 +29,20 @@ const dist = `${Platform.OS}.${nativeBuildVersion}.${
   IS_TESTFLIGHT ? 'tf' : ''
 }${IS_DEV ? 'dev' : ''}`
 
-// init({
-//   autoSessionTracking: false,
-//   dsn: 'https://05bc3789bf994b81bd7ce20c86ccd3ae@o4505071687041024.ingest.sentry.io/4505071690514432',
-//   debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-//   enableInExpoDevelopment: false, // enable this to test in dev
-//   environment: BUILD_ENV ?? 'development',
-//   dist,
-//   release,
-// })
+init({
+  autoSessionTracking: false,
+  dsn: 'https://5f133ee7cf0ca7925971e55a077ebc2f@o4507290022248448.ingest.us.sentry.io/4507290026442752',
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  _experiments: {
+    // profilesSampleRate is relative to tracesSampleRate.
+    // Here, we'll capture profiles for 100% of transactions.
+    profilesSampleRate: 1.0,
+  },
+  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  enableInExpoDevelopment: true, // enable this to test in dev
+  environment: BUILD_ENV ?? __DEV__ ? 'development' : 'not-development',
+  dist,
+  release,
+})

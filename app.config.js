@@ -181,7 +181,7 @@ module.exports = function (config) {
       assetBundlePatterns: ['**/*'],
       plugins: [
         'expo-localization',
-        Boolean(process.env.SENTRY_AUTH_TOKEN) && 'sentry-expo',
+        'sentry-expo',
         [
           'expo-build-properties',
           {
